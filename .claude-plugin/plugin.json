@@ -1,0 +1,9 @@
+{
+  "name": "claude-chats",
+  "version": "1.0.0",
+  "description": "Browse and resume previous Claude Code chat sessions with /chats",
+  "author": {
+    "name": "mohammad"
+  },
+  "skills": "./skills"
+}
