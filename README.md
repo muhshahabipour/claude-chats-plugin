@@ -17,8 +17,8 @@ A [Claude Code](https://claude.ai/code) plugin that lets you browse and resume p
 ### Via Claude Code plugin marketplace
 
 ```
-/plugin marketplace add https://github.com/YOUR_USERNAME/claude-chats-plugin
-/plugin install claude-chats@YOUR_USERNAME
+/plugin marketplace add https://github.com/muhshahabipour/claude-chats-plugin
+/plugin install claude-chats@muhshahabipour
 ```
 
 ### Manual (local)
