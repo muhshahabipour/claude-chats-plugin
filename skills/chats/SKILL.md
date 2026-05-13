@@ -1,7 +1,7 @@
 ---
 name: chats
 description: Browse and resume previous Claude Code chat sessions for the current project. Lists sessions with short hashes, dates, and titles. Use /chats <hash> for session details and the exact resume command. Use /chats export <hash> to export a session to markdown for Cursor or Codex.
-argument-hint: [<hash> | export <hash>]
+argument-hint: [<hash> | export <hash> | search <keyword>]
 allowed-tools: [Bash]
 ---
 
@@ -14,6 +14,7 @@ Determine the mode from `$ARGUMENTS`:
 - **8-char hash** (e.g. `5d78b77e`) → show detail for that session
 - **`export <hash>`** → export that session to `CLAUDE_HANDOFF.md`
 - **`export`** (no hash) → export the most recent session
+- **`search <keyword>`** → search across all sessions for a keyword
 
 ---
 
@@ -199,8 +200,38 @@ After running, tell the user:
 
 ---
 
+---
+
+## Mode 4: Search Sessions (search keyword)
+
+`$ARGUMENTS` starts with `search `. Extract everything after `search ` as the keyword.
+
+Run this Bash block:
+
+```bash
+set -euo pipefail
+KEYWORD="${ARGUMENTS#search }"
+if [ -z "$KEYWORD" ]; then
+  echo "Usage: /chats search <keyword>"; exit 0
+fi
+ENCODED=$(printf '%s' "$PWD" | sed 's|/|-|g')
+SESSIONS_DIR="$HOME/.claude/projects/$ENCODED"
+SEARCH_SCRIPT="$HOME/.claude/skills/chats/search-sessions.py"
+
+# Fallback to plugin dir if running via plugin install
+if [ ! -f "$SEARCH_SCRIPT" ]; then
+  SEARCH_SCRIPT="${CLAUDE_PLUGIN_ROOT}/scripts/search-sessions.py"
+fi
+
+python3 "$SEARCH_SCRIPT" "$SESSIONS_DIR" "$KEYWORD"
+```
+
+Present the results clearly. Each matching session shows its hash, date, title, and up to 3 snippets with the role (`user`/`asst`) prefixed. If no matches, say so.
+
+---
+
 ## Notes
 
-- `jq` required for Modes 1 & 2. `python3` required for Mode 3.
+- `jq` required for Modes 1 & 2. `python3` required for Modes 3 & 4.
 - `CLAUDE_HANDOFF.md` is safe to add to `.gitignore` if you don't want it committed.
 - The auto-export hook writes this file after every Claude response automatically.
