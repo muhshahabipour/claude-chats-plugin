@@ -96,10 +96,25 @@ Claude Code stores each conversation as a `.jsonl` file in `~/.claude/projects/{
 
 The export converts the raw JSONL into clean markdown with user/assistant turns, tool call summaries, and instructions for Cursor and Codex at the top.
 
+## Recommended: add to your project's `.gitignore`
+
+`CLAUDE_HANDOFF.md` is auto-generated and changes frequently — commit it only if you intentionally want to track handoffs in version control. Otherwise add it to each project's `.gitignore`:
+
+```bash
+echo "CLAUDE_HANDOFF.md" >> .gitignore
+```
+
+Or create `.gitignore` if it doesn't exist yet:
+
+```bash
+echo "CLAUDE_HANDOFF.md" > .gitignore
+```
+
 ## Notes
 
-- `CLAUDE_HANDOFF.md` is auto-generated — add it to your `.gitignore`
 - The Stop hook only exports sessions with 5+ user messages and an auto-generated title, so quick command sessions don't overwrite your handoff file
+- Sessions without a title (very short or interrupted conversations) show as `(untitled)` — this is normal
+- The `--resume` flag takes the full UUID, not the short 8-character hash
 
 ## License
 
